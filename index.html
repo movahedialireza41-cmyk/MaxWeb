@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MAXWORLD — THE DIGITAL UNIVERSE</title>
+    <meta name="description" content="MAXWORLD is a private digital universe — a futuristic interface for creative technology, interactive experiments, and immersive digital experiences. Enter a cinematic world built by Max.">
+    <meta name="keywords" content="MAXWORLD, digital universe, future, interactive, technology, creative, lab, experiments, Max, portfolio, immersive">
+    <meta name="theme-color" content="#050505">
+    <meta property="og:title" content="MAXWORLD — THE DIGITAL UNIVERSE">
+    <meta property="og:description" content="A cinematic digital operating system, designed as an interactive experience. Explore the core, projects, lab and contact Max.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maxworld.digital">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%230a0a0f'/%3E%3Ctext x='50' y='54' font-family='monospace' font-size='40' fill='%23b0c4ff' text-anchor='middle' dominant-baseline='middle' font-weight='bold'%3EMW%3C/text%3E%3C/svg%3E">
+    <style>
+        /* ========== MAXWORLD GLOBAL ========== */
+        :root {
+            --black: #030304;
+            --near-black: #07070a;
+            --graphite: #0c0d11;
+            --charcoal: #13151b;
+            --metal: #1e2129;
+            --silver: #a8b2c8;
+            --silver-dim: #6b7280;
+            --white: #f4f7ff;
+            --accent-blue: #9fb6ff;
+            --accent-violet: #b5a6ff;
+            --subtle-glow: 0 0 20px rgba(159, 182, 255, 0.15);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Menlo', monospace;
+            --transition: 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+            --cursor-size: 28px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--black);
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--silver);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            line-height: 1.5;
+            cursor: none;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0a12 0%, #030304 80%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
+        }
+
+        ::selection {
+            background: rgba(159, 182, 255, 0.2);
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            background: var(--near-black);
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--metal);
+            border-radius: 4px;
+        }
+
+        /* Custom cursor */
+        .cursor-dot, .cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+            will-change: transform, width, height, opacity;
+            transition: width 0.2s, height 0.2s, opacity 0.2s, background 0.2s;
+        }
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--white);
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
+            transform: translate(-50%, -50%);
+        }
+        .cursor-ring {
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 1px solid rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+        }
+        .cursor-ring.hover-interactive {
+            width: calc(var(--cursor-size) * 1.5);
+            height: calc(var(--cursor-size) * 1.5);
+            border-color: var(--accent-blue);
+            background: rgba(159,182,255,0.05);
+            box-shadow: 0 0 20px rgba(159,182,255,0.15);
+        }
+        .cursor-ring.hover-button {
+            width: calc(var(--cursor-size) * 1.8);
+            height: calc(var(--cursor-size) * 1.8);
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.03);
+        }
+        body.no-cursor .cursor-dot, body.no-cursor .cursor-ring { opacity: 0; }
+
+        /* Global sections */
+        section {
+            position: relative;
+            padding: 8rem 2rem;
+            min-height: 60vh;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* typography */
+        h1, h2, h3, .system-title {
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            line-height: 1.1;
+        }
+        h1 { font-size: clamp(3rem, 10vw, 8rem); }
+        h2 { font-size: clamp(2.2rem, 5vw, 4rem); }
+        .mono {
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            color: var(--silver-dim);
+        }
+        .mono.small { font-size: 0.65rem; }
+        .mono.accent { color: var(--accent-blue); }
+        .label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: var(--silver-dim);
+            text-transform: uppercase;
+        }
+
+        /* buttons and links */
+        .btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white);
+            padding: 1rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: none;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            border-color: var(--accent-blue);
+            background: rgba(159,182,255,0.03);
+            box-shadow: var(--subtle-glow);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        .btn:hover::after { transform: translateX(100%); }
+
+        a {
+            color: var(--silver);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover { color: var(--white); }
+
+        /* loading overlay */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--black);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s, visibility 0.8s;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.7rem;
+            color: var(--silver-dim);
+        }
+        #loader .status-line { margin-top: 1.5rem; }
+        #loader .progress-dot {
+            width: 60px; height: 1px; background: var(--metal); margin-top: 2rem; position: relative; overflow: hidden;
+        }
+        #loader .progress-dot span { position: absolute; inset: 0; width: 0%; background: var(--accent-blue); }
+        #loader.complete { opacity: 0; visibility: hidden; pointer-events: none; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loader -->
+    <div id="loader" aria-label="Loading MAXWORLD">
+        <div class="system-title">INITIALIZING MAXWORLD CORE</div>
+        <div class="status-line" id="loader-status">...</div>
+        <div class="progress-dot"><span id="loader-progress"></span></div>
+    </div>
+
+    <!-- custom cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- floating status panel -->
+    <div id="systemStatusPanel" style="position:fixed; bottom:20px; right:20px; z-index:2000; font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.15em; color:var(--silver-dim); text-transform:uppercase; display:flex; gap:0.6rem; align-items:center; cursor:none;" aria-label="System status">
+        <span style="width:6px;height:6px;border-radius:50%;background:#6f6;box-shadow:0 0 8px #6f6;"></span> SYSTEM ONLINE
+    </div>
+
+    <!-- Navigation -->
+    <header style="position:fixed; top:0; left:0; width:100%; z-index:3000; padding:1.5rem 2rem; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(to bottom, rgba(3,3,4,0.9), transparent); pointer-events:none;">
+        <div style="font-family:var(--font-mono); letter-spacing:0.4em; font-size:0.8rem; color:var(--white); pointer-events:auto; cursor:none;" id="navLogo">MAXWORLD</div>
+        <nav style="display:flex; gap:2rem; pointer-events:auto;" aria-label="Primary navigation">
+            <a href="#system" class="nav-link mono small" style="cursor:none;">SYSTEM</a>
+            <a href="#projects" class="nav-link mono small" style="cursor:none;">PROJECTS</a>
+            <a href="#lab" class="nav-link mono small" style="cursor:none;">LAB</a>
+            <a href="#archive" class="nav-link mono small" style="cursor:none;">ARCHIVE</a>
+            <a href="#connect" class="nav-link mono small" style="cursor:none;">CONTACT</a>
+            <button id="commandBtn" class="btn mono small" style="cursor:none; padding:0.4rem 0.8rem;">COMMAND ⌘K</button>
+        </nav>
+    </header>
+
+    <!-- command palette -->
+    <div id="commandPalette" style="position:fixed; top:10%; left:50%; transform:translateX(-50%); width:min(90%,600px); background:rgba(10,10,14,0.95); border:1px solid var(--metal); backdrop-filter:blur(20px); z-index:5000; padding:1.5rem; border-radius:4px; display:none; box-shadow:0 30px 60px rgba(0,0,0,0.6);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <span class="mono">MAXWORLD COMMAND</span>
+            <button id="closeCommand" style="background:none;border:none;color:var(--silver);cursor:none;font-size:1rem;">✕</button>
+        </div>
+        <input type="text" id="commandInput" placeholder="type command..." style="width:100%; background:transparent; border:none; border-bottom:1px solid var(--metal); padding:0.8rem 0; color:var(--white); font-family:var(--font-mono); letter-spacing:0.1em; outline:none;" autofocus>
+        <div id="commandSuggestions" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- HERO / OPENING -->
+    <section id="hero" style="min-height:180vh; display:flex; align-items:center; justify-content:center; padding:0 2rem;">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;">
+            <canvas id="heroCanvas" style="width:100%; height:100%; display:block;"></canvas>
+        </div>
+        <div style="text-align:center; z-index:2; position:relative;">
+            <div class="mono" style="margin-bottom:1rem;">THE DIGITAL UNIVERSE</div>
+            <h1 style="font-size:clamp(4rem, 15vw, 12rem); letter-spacing:0.1em; font-weight:200; text-shadow:0 0 80px rgba(159,182,255,0.2);">MAXWORLD</h1>
+            <p style="margin-top:2rem; font-weight:200; letter-spacing:0.3em; text-transform:uppercase; font-size:0.8rem; color:var(--silver);">BUILDING THE FUTURE, ONE DIGITAL SYSTEM AT A TIME</p>
+            <div style="margin-top:4rem;" class="mono small">SCROLL TO ENTER</div>
+        </div>
+    </section>
+
+    <!-- MAX CORE -->
+    <section id="system" style="min-height:120vh; display:flex; align-items:center;">
+        <div class="container" style="text-align:center;">
+            <div class="label">MAX CORE</div>
+            <div id="coreSphere" style="width:320px;height:320px;margin:3rem auto; border-radius:50%; background:radial-gradient(circle at 35% 35%, #222a3a, #0a0a10 70%, #030304); box-shadow:0 0 100px rgba(159,182,255,0.1), inset 0 0 80px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; position:relative; cursor:none;">
+                <div style="position:absolute; inset:20%; border-radius:50%; border:1px solid rgba(159,182,255,0.15); animation:spin 20s linear infinite;"></div>
+                <div style="position:absolute; inset:35%; border-radius:50%; border:1px dashed rgba(159,182,255,0.2); animation:spin 15s linear reverse infinite;"></div>
+                <span style="font-family:var(--font-mono); letter-spacing:0.5em; color:var(--accent-blue);">CORE</span>
+            </div>
+            <div style="display:flex; justify-content:center; gap:4rem; flex-wrap:wrap; margin-top:3rem;">
+                <div><span class="label">STATUS</span><br><span class="mono accent">ONLINE</span></div>
+                <div><span class="label">PROCESSING</span><br><span class="mono">98.7%</span></div>
+                <div><span class="label">NETWORK</span><br><span class="mono">STABLE</span></div>
+                <div><span class="label">ENERGY</span><br><span class="mono">OPTIMAL</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT / CREATOR -->
+    <section id="about" style="background:var(--near-black);">
+        <div class="container" style="max-width:800px;">
+            <div class="label" style="margin-bottom:2rem;">WELCOME TO MY UNIVERSE</div>
+            <h2 style="font-size:2.8rem; line-height:1.2;">I DON'T WANT TO JUST USE TECHNOLOGY. I WANT TO BUILD WITH IT.</h2>
+            <div style="margin-top:3rem; display:grid; gap:1.5rem;">
+                <p style="font-weight:200; letter-spacing:0.05em;">Max is a digital creator, experimental builder, and future architect. This universe is a collection of ideas, systems, and interactive experiments — built not just to exist, but to evolve.</p>
+                <p class="mono small" style="margin-top:1rem;">CREATIVE / TECHNOLOGY / EXPERIMENTATION / DESIGN / GAMING / DIGITAL CREATION</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE / JOURNEY -->
+    <section id="journey" style="background:var(--black);">
+        <div class="container">
+            <div class="label" style="margin-bottom:4rem;">THE JOURNEY</div>
+            <div style="display:grid; gap:6rem;">
+                <div class="journey-item"><span class="mono accent">ORIGIN</span><p style="margin-top:0.5rem;">curiosity, first lines of code, the spark.</p></div>
+                <div class="journey-item" style="transform:translateX(10%);"><span class="mono accent">EXPERIMENTATION</span><p style="margin-top:0.5rem;">breaking things to understand them.</p></div>
+                <div class="journey-item"><span class="mono accent">CREATION</span><p style="margin-top:0.5rem;">building tools, games, interfaces.</p></div>
+                <div class="journey-item" style="transform:translateX(-5%);"><span class="mono accent">BUILDING</span><p style="margin-top:0.5rem;">MAXWORLD takes shape.</p></div>
+                <div class="journey-item"><span class="mono accent">NEXT</span><p style="margin-top:0.5rem;">unknown, but intentional.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" style="background:var(--near-black);">
+        <div class="container">
+            <div class="label" style="margin-bottom:3rem;">PROJECT ARCHIVE</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem;">
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="001"> 
+                    <span class="mono small">PROJECT 001 · CONCEPT</span><h3 style="margin:1rem 0 0.5rem;">NEURAL CANVAS</h3><span class="label">AI / WEB</span><p>interactive generative art engine</p>
+                </div>
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="002"> 
+                    <span class="mono small">PROJECT 002 · PROTOTYPE</span><h3 style="margin:1rem 0 0.5rem;">ORBITAL</h3><span class="label">GAMING / 3D</span><p>gravity-based interaction experiment</p>
+                </div>
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="003"> 
+                    <span class="mono small">PROJECT 003 · EXPERIMENT</span><h3 style="margin:1rem 0 0.5rem;">SYNTHWAVE</h3><span class="label">MEDIA / AUDIO</span><p>procedural sound visualization</p>
+                </div>
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="004"> 
+                    <span class="mono small">PROJECT 004 · CONCEPT</span><h3 style="margin:1rem 0 0.5rem;">DIGITAL ECHO</h3><span class="label">CREATIVE / WEB</span><p>memory-inspired digital artifacts</p>
+                </div>
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="005"> 
+                    <span class="mono small">PROJECT 005 · PROTOTYPE</span><h3 style="margin:1rem 0 0.5rem;">FLUX</h3><span class="label">EXPERIMENTAL</span><p>interactive particle flow system</p>
+                </div>
+                <div class="project-card" style="border:1px solid var(--metal); padding:1.5rem; transition:all 0.3s; cursor:none;" data-project="006"> 
+                    <span class="mono small">PROJECT 006 · CONCEPT</span><h3 style="margin:1rem 0 0.5rem;">MONOLITH</h3><span class="label">WEB / AI</span><p>minimalist data interface</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE LAB -->
+    <section id="lab" style="background:var(--black);">
+        <div class="container">
+            <div class="label" style="margin-bottom:3rem;">THE LAB — INTERACTIVE MODULES</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:2rem;">
+                <div class="lab-module" style="border:1px solid var(--metal); padding:1.5rem; cursor:none;">
+                    <h4 class="mono">PARTICLE FIELD</h4><canvas id="labParticles" width="200" height="150" style="width:100%; margin-top:1rem; background:#0a0a0f;"></canvas>
+                </div>
+                <div class="lab-module" style="border:1px solid var(--metal); padding:1.5rem; cursor:none;">
+                    <h4 class="mono">SYSTEM CLOCK</h4><div id="digitalClock" style="font-family:var(--font-mono); font-size:1.5rem; margin-top:1rem;">00:00:00</div>
+                </div>
+                <div class="lab-module" style="border:1px solid var(--metal); padding:1.5rem; cursor:none;">
+                    <h4 class="mono">WAVEFORM</h4><canvas id="labWave" width="200" height="80" style="width:100%; margin-top:1rem;"></canvas>
+                </div>
+                <div class="lab-module" style="border:1px solid var(--metal); padding:1.5rem; cursor:none;">
+                    <h4 class="mono">GENERATIVE GRID</h4><canvas id="labGrid" width="200" height="150" style="width:100%; margin-top:1rem;"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARCHIVE -->
+    <section id="archive" style="background:var(--near-black);">
+        <div class="container">
+            <div class="label" style="margin-bottom:3rem;">THE ARCHIVE</div>
+            <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+                <div class="archive-item" style="border:1px solid var(--metal); padding:1.2rem; min-width:200px; cursor:none;"><span class="mono small">ARCHIVE // 0042</span><br><span class="label">EXPERIMENTAL</span><br>evolving concept</div>
+                <div class="archive-item" style="border:1px solid var(--metal); padding:1.2rem; min-width:200px; cursor:none;"><span class="mono small">ARCHIVE // 0091</span><br><span class="label">DESIGN</span><br>interface sketch</div>
+                <div class="archive-item" style="border:1px solid var(--metal); padding:1.2rem; min-width:200px; cursor:none;"><span class="mono small">ARCHIVE // 0117</span><br><span class="label">NOTE</span><br>future direction</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TERMINAL -->
+    <section id="terminal" style="background:var(--black); min-height:auto; padding:4rem 2rem;">
+        <div class="container" style="max-width:700px;">
+            <div class="label">MAXWORLD TERMINAL</div>
+            <div id="terminalOutput" style="background:#0a0a0f; padding:1.5rem; margin-top:1rem; font-family:var(--font-mono); min-height:200px; border:1px solid var(--metal);"></div>
+            <input type="text" id="terminalInput" style="width:100%; background:transparent; border:none; border-bottom:1px solid var(--metal); padding:1rem 0; color:var(--white); font-family:var(--font-mono); outline:none; margin-top:1rem;" placeholder="type help...">
+        </div>
+    </section>
+
+    <!-- CONNECT WITH MAX -->
+    <section id="connect" style="background:var(--near-black);">
+        <div class="container" style="text-align:center;">
+            <div class="label" style="margin-bottom:2rem;">CONNECT WITH MAX</div>
+            <h2 style="font-size:3rem; margin-bottom:2rem;">OFFICIAL PLATFORMS</h2>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:1.5rem; margin-top:3rem;">
+                <a href="https://t.me/MindPulse_AIBot" target="_blank" rel="noopener noreferrer" class="btn" style="cursor:none;">MINDPULSE AI<br><span class="mono small">Telegram AI Bot</span></a>
+                <a href="https://t.me/MaxWorld9050" target="_blank" rel="noopener noreferrer" class="btn" style="cursor:none;">DIRECT CONTACT<br><span class="mono small">@MaxWorld9050</span></a>
+                <a href="https://youtube.com/@quiznova-shorts?si=FIgKzGEzNMo7s0VY" target="_blank" rel="noopener noreferrer" class="btn" style="cursor:none;">QUIZNOVA<br><span class="mono small">Flag Quiz & Shorts</span></a>
+                <a href="https://youtube.com/@iimaxworldii?si=xIkgYx0xTFtYAcrQ" target="_blank" rel="noopener noreferrer" class="btn" style="cursor:none;">MAXWORLD<br><span class="mono small">Official YouTube</span></a>
+            </div>
+            <p style="margin-top:3rem; font-weight:200;">"Have a question, idea, collaboration, or just want to connect? Reach out through Telegram."</p>
+            <div style="margin-top:5rem; font-size:2rem; color:var(--white);">WHAT WOULD YOU BUILD IF YOU COULD CREATE YOUR OWN DIGITAL UNIVERSE?</div>
+        </div>
+    </section>
+
+    <!-- FINAL MOMENT / FOOTER -->
+    <footer style="background:var(--black); padding:8rem 2rem; text-align:center; min-height:70vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="mono small">SYSTEM STATUS: ONLINE</div>
+        <h2 style="margin:2rem 0; font-size:2.5rem;">MAXWORLD</h2>
+        <p class="mono" style="margin-bottom:3rem;">THE UNIVERSE NEVER STOPS.</p>
+        <div style="display:flex; gap:2rem; flex-wrap:wrap; justify-content:center; margin-bottom:4rem;">
+            <a href="#system" class="nav-link mono small">SYSTEM</a>
+            <a href="#projects" class="nav-link mono small">PROJECTS</a>
+            <a href="#lab" class="nav-link mono small">LAB</a>
+            <a href="#archive" class="nav-link mono small">ARCHIVE</a>
+            <a href="#connect" class="nav-link mono small">CONTACT</a>
+        </div>
+        <div class="mono small">© 2026 MAXWORLD</div>
+        <div class="mono small" style="margin-top:0.5rem; opacity:0.4;">DIGITAL EXPERIENCE / VERSION 1.0</div>
+    </footer>
+
+    <script>
+        (function() {
+            // ================= CONFIGURATION =================
+            const MAXWORLD_CONFIG = {
+                name: "MAXWORLD",
+                creator: "MAX",
+                year: 2026,
+                theme: "DARK",
+                accent: "ELECTRIC",
+                soundEnabled: false,
+                particles: true,
+                reducedMotion: false
+            };
+
+            const PROFILE = {
+                name: "MAX",
+                title: "Digital Creator & Future Builder",
+                location: "YOUR LOCATION",
+                email: "hello@maxworld.digital"
+            };
+
+            // ================= STATE =================
+            let customCursorActive = window.innerWidth > 768;
+            let focusMode = false;
+            let soundOn = false;
+            let secretCount = 0;
+
+            // ================= LOADER =================
+            const loader = document.getElementById('loader');
+            const loaderStatus = document.getElementById('loader-status');
+            const loaderProgress = document.getElementById('loader-progress');
+            let progress = 0;
+            const messages = ['LOADING CORE', 'LOADING ENVIRONMENT', 'LOADING INTERFACE', 'CALIBRATING SYSTEM', 'ONLINE'];
+            let msgIndex = 0;
+            const loadInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadInterval);
+                    loaderStatus.textContent = 'SYSTEM ONLINE';
+                    setTimeout(() => {
+                        loader.classList.add('complete');
+                        setTimeout(() => loader.style.display = 'none', 900);
+                    }, 300);
+                } else {
+                    loaderProgress.style.width = progress + '%';
+                    if (progress > (msgIndex+1) * 20 && msgIndex < messages.length-1) {
+                        msgIndex++;
+                        loaderStatus.textContent = messages[msgIndex];
+                    }
+                }
+            }, 200);
+
+            // ================= CUSTOM CURSOR =================
+            const dot = document.getElementById('cursorDot');
+            const ring = document.getElementById('cursorRing');
+            let mouseX = innerWidth/2, mouseY = innerHeight/2, ringX = mouseX, ringY = mouseY;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX; mouseY = e.clientY;
+                if (customCursorActive) {
+                    dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+                }
+            });
+            function updateRing() {
+                ringX += (mouseX - ringX) * 0.15;
+                ringY += (mouseY - ringY) * 0.15;
+                ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+                if (customCursorActive) requestAnimationFrame(updateRing);
+            }
+            if (customCursorActive) {
+                updateRing();
+                document.body.style.cursor = 'none';
+            } else {
+                document.body.style.cursor = 'auto';
+                dot.style.display = 'none'; ring.style.display = 'none';
+            }
+
+            document.querySelectorAll('a, button, .project-card, .archive-item, .lab-module').forEach(el => {
+                el.addEventListener('mouseenter', () => ring.classList.add('hover-interactive'));
+                el.addEventListener('mouseleave', () => ring.classList.remove('hover-interactive'));
+            });
+
+            // ================= INTERSECTION OBSERVER =================
+            const sections = document.querySelectorAll('section, footer');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.2 });
+            sections.forEach(s => observer.observe(s));
+
+            // ================= COMMAND PALETTE =================
+            const commandBtn = document.getElementById('commandBtn');
+            const palette = document.getElementById('commandPalette');
+            const cmdInput = document.getElementById('commandInput');
+            const cmdSuggestions = document.getElementById('commandSuggestions');
+            const closeCmd = document.getElementById('closeCommand');
+            commandBtn.addEventListener('click', () => { palette.style.display = 'block'; cmdInput.focus(); });
+            closeCmd.addEventListener('click', () => palette.style.display = 'none');
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); palette.style.display = 'block'; cmdInput.focus(); }
+                if (e.key === 'Escape') palette.style.display = 'none';
+            });
+            const commands = ['/home', '/projects', '/lab', '/archive', '/system', '/about', '/contact', '/secret'];
+            cmdInput.addEventListener('input', () => {
+                const val = cmdInput.value.toLowerCase();
+                const filtered = commands.filter(c => c.includes(val));
+                cmdSuggestions.innerHTML = filtered.map(c => `<div class="mono small" style="padding:0.3rem; cursor:none;" onclick="document.getElementById('commandInput').value='${c}'; document.getElementById('commandInput').dispatchEvent(new Event('input'));">${c}</div>`).join('');
+            });
+            cmdInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const cmd = cmdInput.value.trim().toLowerCase().replace('/', '');
+                    if (cmd === 'secret') { triggerSecret(); }
+                    else if (cmd === 'home') scrollToSection('hero');
+                    else if (cmd === 'projects') scrollToSection('projects');
+                    else if (cmd === 'lab') scrollToSection('lab');
+                    else if (cmd === 'archive') scrollToSection('archive');
+                    else if (cmd === 'system') scrollToSection('system');
+                    else if (cmd === 'about') scrollToSection('about');
+                    else if (cmd === 'contact') scrollToSection('connect');
+                    palette.style.display = 'none';
+                    cmdInput.value = '';
+                }
+            });
+
+            function scrollToSection(id) {
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // ================= TERMINAL =================
+            const termOutput = document.getElementById('terminalOutput');
+            const termInput = document.getElementById('terminalInput');
+            const terminalLines = [];
+            function addTerminal(text, cls='') {
+                const div = document.createElement('div');
+                div.className = cls;
+                div.textContent = text;
+                termOutput.appendChild(div);
+            }
+            termInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const cmd = termInput.value.trim().toLowerCase();
+                    addTerminal('> ' + cmd, 'mono');
+                    if (cmd === 'help') { addTerminal('commands: help, clear, status, about, projects, system, time, matrix, secret'); }
+                    else if (cmd === 'clear') { termOutput.innerHTML = ''; }
+                    else if (cmd === 'status') { addTerminal('SYSTEM'); addTerminal('CORE: ONLINE'); addTerminal('NETWORK: STABLE'); addTerminal('ENV: ACTIVE'); }
+                    else if (cmd === 'about') { addTerminal('MAXWORLD — digital universe by MAX'); }
+                    else if (cmd === 'projects') { addTerminal('6 concept/prototype projects'); }
+                    else if (cmd === 'system') { addTerminal('MAX CORE v1.0'); }
+                    else if (cmd === 'time') { addTerminal(new Date().toLocaleTimeString()); }
+                    else if (cmd === 'matrix') { addTerminal('follow the white rabbit...'); triggerSecret(); }
+                    else if (cmd === 'secret') { triggerSecret(); }
+                    else { addTerminal('unknown command. type help'); }
+                    termInput.value = '';
+                    termOutput.scrollTop = termOutput.scrollHeight;
+                }
+            });
+
+            // ================= SECRET SYSTEM =================
+            function triggerSecret() {
+                const blackout = document.createElement('div');
+                blackout.style.cssText = 'position:fixed; inset:0; background:#000; z-index:99999; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#fff; font-family:monospace;';
+                blackout.innerHTML = '<div style="font-size:2rem; letter-spacing:0.3em;">ACCESS GRANTED</div><div style="margin-top:1rem;">MAXWORLD // RESTRICTED</div>';
+                document.body.appendChild(blackout);
+                setTimeout(() => { blackout.style.opacity = '0'; blackout.style.transition = '1s'; setTimeout(() => blackout.remove(), 1000); }, 2000);
+            }
+
+            // ================= CLOCK =================
+            function updateClock() {
+                const clockEl = document.getElementById('digitalClock');
+                if (clockEl) {
+                    const now = new Date();
+                    clockEl.textContent = now.toLocaleTimeString('en-GB', { hour12: false });
+                }
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // ================= CANVAS: HERO PARTICLES =================
+            const heroCanvas = document.getElementById('heroCanvas');
+            if (heroCanvas) {
+                const ctx = heroCanvas.getContext('2d');
+                let particles = [];
+                const pCount = window.innerWidth < 768 ? 40 : 100;
+                heroCanvas.width = heroCanvas.offsetWidth;
+                heroCanvas.height = heroCanvas.offsetHeight;
+                function initParticles() {
+                    for (let i=0; i<pCount; i++) {
+                        particles.push({
+                            x: Math.random()*heroCanvas.width,
+                            y: Math.random()*heroCanvas.height,
+                            vx: (Math.random()-0.5)*0.3,
+                            vy: (Math.random()-0.5)*0.3,
+                            size: Math.random()*1.5
+                        });
+                    }
+                }
+                initParticles();
+                function drawHero() {
+                    ctx.clearRect(0,0,heroCanvas.width,heroCanvas.height);
+                    particles.forEach(p => {
+                        p.x += p.vx; p.y += p.vy;
+                        if (p.x<0||p.x>heroCanvas.width) p.vx*=-1;
+                        if (p.y<0||p.y>heroCanvas.height) p.vy*=-1;
+                        ctx.beginPath();
+                        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+                        ctx.fillStyle = 'rgba(180,200,255,0.5)';
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(drawHero);
+                }
+                drawHero();
+            }
+
+            // ================= LAB MODULES =================
+            const labParticlesCanvas = document.getElementById('labParticles');
+            if (labParticlesCanvas) {
+                const lctx = labParticlesCanvas.getContext('2d');
+                let lp = [];
+                for (let i=0;i<25;i++) lp.push({x:Math.random()*200,y:Math.random()*150,vx:(Math.random()-0.5)*0.6,vy:(Math.random()-0.5)*0.6});
+                setInterval(() => {
+                    lctx.clearRect(0,0,200,150);
+                    lp.forEach(p => {
+                        p.x+=p.vx; p.y+=p.vy;
+                        if(p.x<0||p.x>200)p.vx*=-1; if(p.y<0||p.y>150)p.vy*=-1;
+                        lctx.fillStyle='#9fb6ff'; lctx.beginPath(); lctx.arc(p.x,p.y,2,0,7); lctx.fill();
+                    });
+                }, 50);
+            }
+
+            const waveCanvas = document.getElementById('labWave');
+            if (waveCanvas) {
+                const wctx = waveCanvas.getContext('2d');
+                let t = 0;
+                setInterval(() => {
+                    wctx.clearRect(0,0,200,80);
+                    wctx.beginPath();
+                    for (let x=0; x<200; x+=5) {
+                        const y = 40 + Math.sin(x*0.05 + t)*15;
+                        if(x===0) wctx.moveTo(x,y); else wctx.lineTo(x,y);
+                    }
+                    wctx.strokeStyle='#9fb6ff'; wctx.stroke(); t+=0.1;
+                }, 30);
+            }
+
+            const gridCanvas = document.getElementById('labGrid');
+            if (gridCanvas) {
+                const gctx = gridCanvas.getContext('2d');
+                setInterval(() => {
+                    gctx.clearRect(0,0,200,150);
+                    for(let i=0;i<10;i++) {
+                        for(let j=0;j<7;j++) {
+                            const x=i*20, y=j*20;
+                            gctx.fillStyle = Math.random()>0.5?'#2a3040':'#0c0d11';
+                            gctx.fillRect(x,y,18,18);
+                        }
+                    }
+                }, 500);
+            }
+
+            // ================= KEYBOARD SHORTCUTS =================
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'm' && !e.ctrlKey && !e.metaKey && !e.target.matches('input')) soundToggle();
+                if (e.key === 'r' && !e.ctrlKey && !e.metaKey && !e.target.matches('input')) toggleFocusMode();
+                if (e.key === 'h' && !e.ctrlKey && !e.metaKey && !e.target.matches('input')) scrollToSection('hero');
+                if (e.ctrlKey && e.shiftKey && e.key === 'M') triggerSecret();
+                if (e.key.toLowerCase() === 'max' && document.activeElement === document.body) { secretCount++; if(secretCount>5) triggerSecret(); }
+            });
+
+            function soundToggle() {
+                soundOn = !soundOn;
+                if (soundOn) {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    osc.frequency.value = 600; osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.05);
+                }
+            }
+            function toggleFocusMode() {
+                focusMode = !focusMode;
+                document.body.style.filter = focusMode ? 'grayscale(0.3) contrast(1.1)' : 'none';
+            }
+
+            // ================= REDUCED MOTION SUPPORT =================
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.body.classList.add('no-cursor');
+                customCursorActive = false;
+                dot.style.display='none'; ring.style.display='none';
+                document.body.style.cursor='auto';
+            }
+
+            // Logo click easter egg
+            document.getElementById('navLogo').addEventListener('click', () => {
+                secretCount++;
+                if(secretCount >= 7) triggerSecret();
+            });
+
+            // ================= CONTACT FORM SIMULATION =================
+            const connectSection = document.getElementById('connect');
+            const questionEl = connectSection.querySelector('div:last-child');
+            questionEl.addEventListener('click', () => {
+                addTerminal('MAXWORLD: contact via telegram @MaxWorld9050 or @MindPulse_AIBot');
+                triggerSecret();
+            });
+        })();
+    </script>
+    <style>
+        /* responsive adjustments */
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+            section { padding: 4rem 1.2rem; }
+            #system { min-height: auto; }
+            .container { max-width: 100%; }
+            header { padding: 0.8rem 1rem; }
+            nav { gap: 0.8rem; }
+            .btn { padding: 0.6rem 1rem; font-size: 0.7rem; }
+            #hero { min-height: 140vh; }
+            h1 { letter-spacing: 0.05em; }
+            .journey-item { transform: none !important; }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>
