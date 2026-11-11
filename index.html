@@ -1,776 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>MAXWORLD — Developer & Digital Creator</title>
-  <meta name="description" content="MaxWorld is the personal developer portfolio of Alireza, showcasing web development, digital design, creative projects, and interactive digital experiences.">
-  <meta name="theme-color" content="#0b0d14">
-  <meta property="og:title" content="MAXWORLD — Developer & Digital Creator">
-  <meta property="og:description" content="MaxWorld is the personal developer portfolio of Alireza, a young developer and digital creator building modern web experiences.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://maxworld.dev">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    :root {
-      --bg: #080a0f;
-      --bg2: #0c101b;
-      --card-bg: rgba(20, 25, 38, 0.65);
-      --glass: rgba(12, 16, 28, 0.72);
-      --border-glow: rgba(0, 255, 255, 0.18);
-      --accent: #6ee7f9;
-      --accent2: #b794f4;
-      --text: #e8edf5;
-      --text-dim: #9aa5b8;
-      --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    }
-    html {
-      scroll-behavior: smooth;
-      background: var(--bg);
-    }
-    body {
-      background: transparent;
-      font-family: var(--font-sans);
-      color: var(--text);
-      overflow-x: hidden;
-      line-height: 1.6;
-      min-height: 100vh;
-      position: relative;
-      cursor: none;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      body {
-        cursor: none;
-      }
-      a, button, .interactive {
-        cursor: none !important;
-      }
-    }
-    /* custom cursor */
-    .cursor-dot, .cursor-ring {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      mix-blend-mode: screen;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      will-change: transform;
-    }
-    .cursor-dot {
-      width: 8px;
-      height: 8px;
-      background: white;
-      box-shadow: 0 0 15px #6ee7f9, 0 0 30px rgba(110, 231, 249, 0.4);
-      transition: width 0.2s, height 0.2s, background 0.2s;
-    }
-    .cursor-ring {
-      width: 40px;
-      height: 40px;
-      border: 1.5px solid rgba(110, 231, 249, 0.6);
-      background: transparent;
-      transition: width 0.25s, height 0.25s, border-color 0.2s, background 0.2s;
-    }
-    .cursor-hover .cursor-dot {
-      width: 14px;
-      height: 14px;
-      background: #b794f4;
-    }
-    .cursor-hover .cursor-ring {
-      width: 60px;
-      height: 60px;
-      border-color: #b794f4;
-      background: rgba(183, 148, 244, 0.1);
-    }
-    @media (max-width: 768px), (hover: none), (pointer: coarse) {
-      .cursor-dot, .cursor-ring { display: none; }
-      body { cursor: auto; }
-      a, button, .interactive { cursor: pointer; }
-    }
-    /* loading screen */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: #050608;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      transition: opacity 0.6s, visibility 0.6s;
-    }
-    .loader-content {
-      text-align: center;
-    }
-    .loader-logo {
-      font-family: var(--font-mono);
-      font-size: 3.5rem;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      background: linear-gradient(135deg, #fff, #6ee7f9 50%, #b794f4);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: loaderPulse 1.6s infinite;
-    }
-    @keyframes loaderPulse {
-      0%, 100% { text-shadow: 0 0 10px rgba(110,231,249,0.4); }
-      50% { text-shadow: 0 0 25px rgba(183,148,244,0.8); }
-    }
-    .loader-bar {
-      width: 200px;
-      height: 2px;
-      background: #1f2533;
-      margin: 25px auto 0;
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-    .loader-bar::after {
-      content: '';
-      position: absolute;
-      left: -50%;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, #6ee7f9, #b794f4, transparent);
-      animation: loadSlide 1.2s infinite;
-    }
-    @keyframes loadSlide {
-      0% { left: -50%; }
-      100% { left: 120%; }
-    }
-    /* scroll progress */
-    #progressBar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      width: 0%;
-      background: linear-gradient(90deg, #6ee7f9, #b794f4);
-      z-index: 999;
-      box-shadow: 0 0 12px #6ee7f9;
-      transition: width 0.1s;
-    }
-    /* background canvas & overlays */
-    #bgCanvas {
-      position: fixed;
-      inset: 0;
-      z-index: -3;
-      opacity: 0.9;
-      pointer-events: none;
-    }
-    .aurora-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background: radial-gradient(circle at 20% 30%, rgba(110,231,249,0.1), transparent 40%),
-                  radial-gradient(circle at 80% 70%, rgba(183,148,244,0.12), transparent 45%);
-      pointer-events: none;
-      animation: auroraShift 18s infinite alternate;
-    }
-    @keyframes auroraShift {
-      0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
-      100% { transform: scale(1.2) translate(-2%, 2%); opacity: 1; }
-    }
-    .grid-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background-image: linear-gradient(rgba(110,231,249,0.02) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(110,231,249,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(circle at 50% 50%, black 10%, transparent 80%);
-      pointer-events: none;
-    }
-    /* navbar */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 3rem;
-      backdrop-filter: blur(15px);
-      background: rgba(5, 7, 12, 0.6);
-      transition: background 0.3s, box-shadow 0.3s;
-      border-bottom: 1px solid rgba(110,231,249,0.1);
-    }
-    .nav-logo {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 1.8rem;
-      letter-spacing: 0.2em;
-      background: linear-gradient(135deg, #fff, #6ee7f9);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(110,231,249,0.2);
-    }
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-      align-items: center;
-    }
-    .nav-links a {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1rem;
-      letter-spacing: 0.05em;
-      position: relative;
-      transition: color 0.3s;
-      padding: 0.3rem 0;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0%;
-      height: 2px;
-      background: linear-gradient(90deg, #6ee7f9, #b794f4);
-      transition: width 0.3s;
-    }
-    .nav-links a:hover, .nav-links a.active {
-      color: #fff;
-      text-shadow: 0 0 15px rgba(110,231,249,0.3);
-    }
-    .nav-links a:hover::after, .nav-links a.active::after {
-      width: 100%;
-    }
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 110;
-      padding: 5px;
-    }
-    .menu-toggle span {
-      width: 28px;
-      height: 2px;
-      background: var(--text);
-      border-radius: 2px;
-      transition: 0.3s;
-    }
-    .menu-open .menu-toggle span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: #6ee7f9; }
-    .menu-open .menu-toggle span:nth-child(2) { opacity: 0; }
-    .menu-open .menu-toggle span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background: #b794f4; }
-    @media (max-width: 860px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 70%;
-        max-width: 320px;
-        height: 100vh;
-        background: rgba(5, 7, 12, 0.95);
-        backdrop-filter: blur(30px);
-        flex-direction: column;
-        justify-content: center;
-        gap: 2.5rem;
-        transition: right 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
-        border-left: 1px solid rgba(110,231,249,0.2);
-        padding: 2rem;
-      }
-      .nav-links.open { right: 0; }
-      .menu-toggle { display: flex; }
-    }
-    /* sections */
-    section {
-      padding: 7rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .section-title {
-      font-family: var(--font-mono);
-      font-size: 2.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      margin-bottom: 3rem;
-      text-align: center;
-      background: linear-gradient(135deg, #fff, #6ee7f9 60%, #b794f4);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    /* hero */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8rem 1.5rem 4rem;
-    }
-    .hero-content {
-      max-width: 900px;
-    }
-    .hero-logo {
-      font-family: var(--font-mono);
-      font-size: clamp(3rem, 12vw, 7rem);
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      background: linear-gradient(135deg, #ffffff, #6ee7f9 40%, #b794f4 80%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 40px rgba(110,231,249,0.2);
-      animation: heroGlow 4s infinite alternate;
-    }
-    @keyframes heroGlow {
-      0% { text-shadow: 0 0 20px rgba(110,231,249,0.2), 0 0 40px rgba(183,148,244,0.1); }
-      100% { text-shadow: 0 0 40px rgba(110,231,249,0.5), 0 0 70px rgba(183,148,244,0.2); }
-    }
-    .hero-subtitle {
-      font-size: 1.4rem;
-      letter-spacing: 0.2em;
-      color: var(--text-dim);
-      margin: 0.5rem 0 1rem;
-      text-transform: uppercase;
-      font-weight: 400;
-    }
-    .hero-text {
-      font-size: 1.2rem;
-      max-width: 650px;
-      margin: 1.5rem auto 2rem;
-      color: #cbd5e1;
-      line-height: 1.7;
-    }
-    .btn-group {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      transition: all 0.3s;
-      border: 1px solid transparent;
-      background: transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
-    .btn-primary {
-      background: rgba(110,231,249,0.1);
-      border-color: #6ee7f9;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(110,231,249,0.2);
-    }
-    .btn-primary:hover {
-      background: rgba(110,231,249,0.2);
-      box-shadow: 0 0 30px #6ee7f9;
-      transform: translateY(-3px);
-    }
-    .btn-secondary {
-      background: rgba(183,148,244,0.1);
-      border-color: #b794f4;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(183,148,244,0.2);
-    }
-    .btn-secondary:hover {
-      background: rgba(183,148,244,0.2);
-      box-shadow: 0 0 30px #b794f4;
-      transform: translateY(-3px);
-    }
-    /* cards */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-    }
-    .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(110,231,249,0.1);
-      border-radius: 24px;
-      padding: 2rem 1.5rem;
-      transition: all 0.35s;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-      text-align: center;
-    }
-    .glass-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(110,231,249,0.5);
-      box-shadow: 0 25px 40px rgba(0,0,0,0.5), 0 0 30px rgba(110,231,249,0.1);
-    }
-    .skill-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .profile-card {
-      max-width: 500px;
-      margin: 0 auto;
-      text-align: left;
-      padding: 2.5rem;
-    }
-    .profile-chip {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 0.8rem 0;
-      border-bottom: 1px solid rgba(110,231,249,0.08);
-    }
-    .profile-chip span:first-child { color: var(--text-dim); width: 100px; }
-    /* project cards */
-    .project-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 2rem;
-      border: 1px solid rgba(110,231,249,0.1);
-      transition: all 0.3s;
-      text-align: left;
-    }
-    .project-card:hover {
-      border-color: #6ee7f9;
-      box-shadow: 0 0 25px rgba(110,231,249,0.2);
-    }
-    .status-badge {
-      background: rgba(183,148,244,0.2);
-      padding: 0.2rem 1rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      color: #d4c4f0;
-      display: inline-block;
-      margin: 0.8rem 0;
-    }
-    /* timeline */
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      position: relative;
-      padding-left: 2rem;
-    }
-    .timeline-item {
-      border-left: 2px solid #6ee7f9;
-      padding-left: 2rem;
-      position: relative;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -10px;
-      top: 5px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #6ee7f9;
-      box-shadow: 0 0 20px #6ee7f9;
-    }
-    /* mockups */
-    .mockup-window {
-      background: rgba(20, 25, 38, 0.8);
-      border-radius: 18px;
-      border: 1px solid rgba(110,231,249,0.2);
-      padding: 1.5rem;
-      margin: 1rem 0;
-      transform: rotate(-2deg);
-      transition: transform 0.3s;
-    }
-    .mockup-window:hover { transform: rotate(0deg) scale(1.02); }
-    /* footer */
-    footer {
-      text-align: center;
-      padding: 4rem 2rem;
-      border-top: 1px solid rgba(110,231,249,0.1);
-      margin-top: 3rem;
-    }
-    footer a {
-      color: #6ee7f9;
-      text-decoration: none;
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-      .fade-in { opacity: 1; transform: none; }
-    }
-    @media (max-width: 600px) {
-      .section-title { font-size: 2rem; }
-      section { padding: 4rem 1rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaxWorld — Alireza</title>
+<meta name="description" content="Alireza, known as MaxWorld. Windows and Android Xray clients, and the web things built around them.">
+<meta name="theme-color" content="#090a0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #090a0c;
+    --bg-2: #101216;
+    --line: rgba(244, 241, 234, 0.12);
+    --text: #f4f1ea;
+    --muted: #9b968c;
+    --acid: #dff25a;
+    --ink: #11130a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Geist, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 420px at 85% -10%, rgba(223, 242, 90, 0.16), transparent 60%),
+      linear-gradient(180deg, transparent, rgba(0,0,0,0.35));
+    z-index: 0;
+  }
+  a { color: inherit; }
+  .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; position: relative; z-index: 1; }
+  header {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0 14px;
+    background: linear-gradient(var(--bg), rgba(9,10,12,0.86) 70%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .mark {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 0.18em;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  nav { display: flex; gap: 22px; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  nav a:hover { color: var(--text); }
+  .hero { padding: 72px 0 40px; }
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--acid);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(64px, 12vw, 148px);
+    line-height: 0.86;
+    letter-spacing: -0.04em;
+    margin: 18px 0 22px;
+  }
+  h1 em { font-style: italic; color: var(--acid); }
+  .lede {
+    max-width: 620px;
+    color: #d9d4ca;
+    font-size: 18px;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .btn.solid { background: var(--acid); color: var(--ink); }
+  .btn.ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn:hover { transform: translateY(-1px); }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: 64px;
+  }
+  .facts div { padding: 18px 16px 20px 0; }
+  .facts strong { display: block; font-size: 15px; font-weight: 600; }
+  .facts span { color: var(--muted); font-size: 13px; }
+  section { padding: 88px 0; }
+  .sec-h {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+  .sec-h span { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  .project {
+    display: grid;
+    grid-template-columns: 92px 1.3fr 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  .project:hover h3 { color: var(--acid); }
+  .idx { font-family: "IBM Plex Mono", monospace; color: var(--muted); font-size: 13px; }
+  h3 { font-size: 28px; font-weight: 500; letter-spacing: -0.03em; }
+  .project p { color: var(--muted); font-size: 14px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    border: 1px solid var(--line);
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .about {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+  }
+  .about p { color: #d7d2c8; font-size: 18px; max-width: 46ch; }
+  .stack { display: flex; flex-wrap: wrap; gap: 8px; align-content: start; }
+  .stack i {
+    font-style: normal;
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #ddd8ce;
+    font-size: 13px;
+  }
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 48px;
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    color: var(--muted); font-size: 13px;
+  }
+  footer a { color: var(--text); }
+  @media (max-width: 800px) {
+    nav { display: none; }
+    .facts, .about, .project { grid-template-columns: 1fr; }
+    .project .tag { justify-self: start; }
+    h3 { font-size: 22px; }
+  }
+</style>
 </head>
 <body>
-  <div id="loader">
-    <div class="loader-content">
-      <div class="loader-logo">MAXWORLD</div>
-      <div class="loader-bar"></div>
+<div class="wrap">
+  <header>
+    <a class="mark" href="#top">MAXWORLD</a>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="https://github.com/movahedialireza41-cmyk" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Telegram</a>
+    </nav>
+  </header>
+
+  <main id="top" class="hero">
+    <p class="kicker">Alireza · MaxWorld</p>
+    <h1>Build the<br><em>client.</em></h1>
+    <p class="lede">Personal site of Alireza. I ship Xray clients for Windows and Android, and the interfaces around them.</p>
+    <div class="row">
+      <a class="btn solid" href="#work">See the work</a>
+      <a class="btn ghost" href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Telegram</a>
     </div>
-  </div>
-  <div id="progressBar"></div>
-  <canvas id="bgCanvas"></canvas>
-  <div class="aurora-overlay"></div>
-  <div class="grid-overlay"></div>
+    <div class="facts">
+      <div><strong>Alireza</strong><span>Name</span></div>
+      <div><strong>MaxWorld</strong><span>Name online</span></div>
+      <div><strong>15</strong><span>Years old</span></div>
+      <div><strong>Clients + web</strong><span>What I ship</span></div>
+    </div>
+  </main>
 
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+  <section id="work">
+    <div class="sec-h">
+      <h2>Selected work</h2>
+      <span>04</span>
+    </div>
 
-  <nav id="navbar">
-    <div class="nav-logo">MAXWORLD</div>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#hero" class="active">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#design">Design</a></li>
-      <li><a href="#journey">Journey</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorld-Windows" target="_blank" rel="noreferrer">
+      <span class="idx">01</span>
+      <h3>MaxWorld Windows</h3>
+      <p>Xray client for Windows. Installer and portable builds sit on Releases. System proxy, TUN, subscriptions, shield.</p>
+      <span class="tag">Windows · Electron</span>
+    </a>
 
-  <section id="hero">
-    <div class="hero-content">
-      <h1 class="hero-logo">MAXWORLD</h1>
-      <div class="hero-subtitle">Developer • Web Designer • Digital Creator</div>
-      <p class="hero-text">I'm Alireza, known online as MaxWorld — a young developer and digital creator passionate about building modern digital experiences, websites, creative projects, and interactive ideas.</p>
-      <div class="btn-group">
-        <a href="#about" class="btn btn-primary interactive">Explore My World</a>
-        <a href="https://t.me/MaxWorld9050" target="_blank" class="btn btn-secondary interactive">Contact Me</a>
+    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorldvpn" target="_blank" rel="noreferrer">
+      <span class="idx">02</span>
+      <h3>MaxWorld Android</h3>
+      <p>Full Xray client for Android. VLESS, VMess, Trojan, Reality, subscriptions, kill switch, in-app updates.</p>
+      <span class="tag">Android · Kotlin</span>
+    </a>
+
+    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorldStore" target="_blank" rel="noreferrer">
+      <span class="idx">03</span>
+      <h3>MaxWorld Store</h3>
+      <p>A small storefront built as a static site. Layout, catalog, and the public face of the brand.</p>
+      <span class="tag">Web · HTML</span>
+    </a>
+
+    <a class="project" href="https://github.com/movahedialireza41-cmyk/Premium-call" target="_blank" rel="noreferrer">
+      <span class="idx">04</span>
+      <h3>Premium Call</h3>
+      <p>An earlier web project. Kept here because the interface work still holds up.</p>
+      <span class="tag">Web</span>
+    </a>
+  </section>
+
+  <section id="about">
+    <div class="sec-h">
+      <h2>About</h2>
+      <span>Now</span>
+    </div>
+    <div class="about">
+      <p>MaxWorld is the name I publish under. I like products that feel finished: a real installer, a readable screen, and a release people can actually download. Fifteen, and already shipping both a phone client and a desktop client.</p>
+      <div class="stack">
+        <i>Kotlin</i><i>Jetpack Compose</i><i>Electron</i><i>JavaScript</i>
+        <i>Xray</i><i>HTML / CSS</i><i>GitHub Actions</i>
       </div>
     </div>
   </section>
 
-  <section id="about">
-    <h2 class="section-title">WHO IS MAXWORLD?</h2>
-    <div class="glass-card profile-card fade-in">
-      <p style="margin-bottom:2rem; color:#cbd5e1;">MaxWorld is the digital identity of Alireza, a young developer and creator who enjoys technology, programming, website development, design, experimentation, and building new digital projects. Creativity, learning, and continuous improvement are at the core of everything MaxWorld creates.</p>
-      <div class="profile-chip"><span>Name:</span> <strong>Alireza</strong></div>
-      <div class="profile-chip"><span>Brand:</span> <strong>MaxWorld</strong></div>
-      <div class="profile-chip"><span>Age:</span> <strong>15 years old</strong></div>
-      <div class="profile-chip"><span>Role:</span> <strong>Developer</strong></div>
-      <div class="profile-chip"><span>Focus:</span> <strong>Web Development & Digital Design</strong></div>
-      <p style="margin-top:1.5rem; font-style:italic;">15 years old — and still building.</p>
-    </div>
-  </section>
-
-  <section id="skills">
-    <h2 class="section-title">WHAT I BUILD</h2>
-    <div class="card-grid fade-in">
-      <div class="glass-card"><div class="skill-icon">💻</div><h3>Web Development</h3><p>HTML, CSS, JavaScript & modern web experiences.</p></div>
-      <div class="glass-card"><div class="skill-icon">🎨</div><h3>UI/UX Design</h3><p>Clean interfaces, motion design, user-friendly concepts.</p></div>
-      <div class="glass-card"><div class="skill-icon">⚡</div><h3>Interactive Projects</h3><p>Creative digital experiences and experimental web ideas.</p></div>
-      <div class="glass-card"><div class="skill-icon">🧠</div><h3>Programming</h3><p>Logic, automation concepts, and building with code.</p></div>
-      <div class="glass-card"><div class="skill-icon">🌀</div><h3>Motion Design</h3><p>Smooth animations and visual storytelling.</p></div>
-      <div class="glass-card"><div class="skill-icon">🚀</div><h3>Creative Tech</h3><p>Exploring new digital possibilities and creative web ideas.</p></div>
-    </div>
-  </section>
-
-  <section id="projects">
-    <h2 class="section-title">MY DIGITAL WORLD</h2>
-    <div class="card-grid fade-in">
-      <div class="project-card"><h3>Interactive Portfolio Concept</h3><p>Futuristic personal site with animated background and glassmorphism.</p><div><span class="status-badge">In Development</span></div><p><strong>Tech:</strong> HTML, CSS, JavaScript</p><button class="btn btn-secondary interactive" style="padding:0.5rem 1.5rem;">Coming Soon</button></div>
-      <div class="project-card"><h3>Creative Web Experiments</h3><p>Experimental layouts and dynamic UI components.</p><div><span class="status-badge">In Development</span></div><p><strong>Tech:</strong> JavaScript, Web APIs</p><button class="btn btn-secondary interactive" style="padding:0.5rem 1.5rem;">Coming Soon</button></div>
-      <div class="project-card"><h3>Digital Creator Hub</h3><p>A concept for organizing digital content and creative projects.</p><div><span class="status-badge">Coming Soon</span></div><p><strong>Tech:</strong> Web Design, UI</p><button class="btn btn-secondary interactive" style="padding:0.5rem 1.5rem;">In Development</button></div>
-    </div>
-  </section>
-
-  <section id="design">
-    <h2 class="section-title">DESIGNING DIGITAL EXPERIENCES</h2>
-    <div class="fade-in" style="max-width:800px;margin:0 auto;">
-      <p style="text-align:center; margin-bottom:2rem;">MaxWorld focuses on creating websites that are modern, interactive, responsive, visually engaging, smooth, user-friendly, and creative.</p>
-      <div class="mockup-window"><div style="display:flex; gap:8px; margin-bottom:10px;"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e;"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840;"></span></div><div style="background:#151b28;height:80px;border-radius:8px;"></div></div>
-      <div class="mockup-window" style="transform:rotate(2deg);"><div style="display:flex; gap:8px; margin-bottom:10px;"><span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;"></span><span style="width:12px;height:12px;border-radius:50%;background:#febc2e;"></span><span style="width:12px;height:12px;border-radius:50%;background:#28c840;"></span></div><div style="background:#1b2233;height:60px;border-radius:8px;"></div></div>
-    </div>
-  </section>
-
-  <section id="journey">
-    <h2 class="section-title">THE MAXWORLD JOURNEY</h2>
-    <div class="timeline fade-in">
-      <div class="timeline-item"><h3>Discover</h3><p>Exploring technology and discovering the world of programming.</p></div>
-      <div class="timeline-item"><h3>Learn</h3><p>Learning development, design, and modern digital technologies.</p></div>
-      <div class="timeline-item"><h3>Build</h3><p>Turning ideas into websites, applications, experiments, and creative projects.</p></div>
-      <div class="timeline-item"><h3>Improve</h3><p>Continuously improving skills, design quality, performance, and creativity.</p></div>
-      <div class="timeline-item"><h3>Create More</h3><p>Building bigger and better digital experiences.</p></div>
-    </div>
-    <div style="text-align:center; margin-top:3rem;">
-      <h3 style="font-family:var(--font-mono);">Learn. Build. Create. Evolve.</h3>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2 class="section-title">LET'S CONNECT</h2>
-    <div style="text-align:center;" class="fade-in">
-      <p style="font-size:1.3rem; margin-bottom:2rem;">Have an idea, project, or simply want to connect?</p>
-      <a href="https://t.me/MaxWorld9050" target="_blank" class="btn btn-primary interactive" style="font-size:1.2rem;">Telegram: @MaxWorld9050</a>
-      <p style="margin-top:1rem; color:var(--text-dim);">(Only public contact method)</p>
-    </div>
-  </section>
-
   <footer>
-    <div style="font-family:var(--font-mono); font-size:1.5rem; letter-spacing:0.15em;">MAXWORLD</div>
-    <p>Developer • Web Designer • Digital Creator</p>
-    <p style="margin-top:1rem;">© 2026 MaxWorld. All rights reserved.</p>
+    <span>MaxWorld · Alireza</span>
+    <span><a href="https://github.com/movahedialireza41-cmyk/MaxWeb">Source of this site</a></span>
   </footer>
-
-  <script>
-    (function() {
-      // Loader
-      const loader = document.getElementById('loader');
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          loader.style.opacity = '0';
-          loader.style.visibility = 'hidden';
-          setTimeout(() => loader.remove(), 600);
-        }, 600);
-      });
-
-      // Custom cursor
-      const dot = document.getElementById('cursorDot');
-      const ring = document.getElementById('cursorRing');
-      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-        document.addEventListener('mousemove', (e) => {
-          dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-          ring.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-        });
-        document.querySelectorAll('.interactive, a, button').forEach(el => {
-          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-        });
-      }
-
-      // Scroll progress
-      const progressBar = document.getElementById('progressBar');
-      window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (scrollTop / docHeight) * 100;
-        progressBar.style.width = progress + '%';
-      });
-
-      // Mobile menu toggle
-      const menuToggle = document.getElementById('menuToggle');
-      const navLinks = document.getElementById('navLinks');
-      menuToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
-        document.body.classList.toggle('menu-open');
-      });
-      navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          navLinks.classList.remove('open');
-          document.body.classList.remove('menu-open');
-        });
-      });
-
-      // Navbar active state
-      const sections = document.querySelectorAll('section[id]');
-      window.addEventListener('scroll', () => {
-        let current = 'hero';
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop - 100;
-          if (window.scrollY >= sectionTop) current = section.getAttribute('id');
-        });
-        navLinks.querySelectorAll('a').forEach(a => {
-          a.classList.remove('active');
-          if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-        });
-      });
-
-      // Scroll reveal
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-      }, { threshold: 0.15 });
-      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-      // Background particle canvas
-      const canvas = document.getElementById('bgCanvas');
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      let W, H;
-      function resizeCanvas() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-      }
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      const particleCount = window.innerWidth < 600 ? 30 : 70;
-      class Particle {
-        constructor() { this.reset(); }
-        reset() {
-          this.x = Math.random() * W;
-          this.y = Math.random() * H;
-          this.r = Math.random() * 2 + 0.5;
-          this.vx = (Math.random() - 0.5) * 0.4;
-          this.vy = (Math.random() - 0.5) * 0.4;
-          this.alpha = Math.random() * 0.5 + 0.2;
-        }
-        update() {
-          this.x += this.vx;
-          this.y += this.vy;
-          if (this.x < 0 || this.x > W) this.vx *= -1;
-          if (this.y < 0 || this.y > H) this.vy *= -1;
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(110, 231, 249, ${this.alpha})`;
-          ctx.fill();
-        }
-      }
-      for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-      function animateParticles() {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        ctx.clearRect(0, 0, W, H);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animateParticles);
-      }
-      animateParticles();
-
-      // Mouse parallax glow
-      let mouseX = 0, mouseY = 0;
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX / window.innerWidth - 0.5;
-        mouseY = e.clientY / window.innerHeight - 0.5;
-        const aurora = document.querySelector('.aurora-overlay');
-        if (aurora) {
-          aurora.style.transform = `scale(1.1) translate(${mouseX * 20}px, ${mouseY * 20}px)`;
-        }
-      });
-
-      // Smooth scrolling for internal links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
-        });
-      });
-    })();
-  </script>
+</div>
 </body>
 </html>
