@@ -3,256 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MaxWorld — Alireza</title>
-<meta name="description" content="Alireza, known as MaxWorld. Windows and Android Xray clients, and the web things built around them.">
-<meta name="theme-color" content="#090a0c">
+<title>MAXWORLD — Alireza</title>
+<meta name="description" content="MaxWorld is Alireza. Windows and Android Xray clients, and the sites built around them.">
+<meta name="theme-color" content="#05060a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #090a0c;
-    --bg-2: #101216;
-    --line: rgba(244, 241, 234, 0.12);
-    --text: #f4f1ea;
-    --muted: #9b968c;
-    --acid: #dff25a;
-    --ink: #11130a;
+    --bg: #05060a;
+    --text: #f3f6ff;
+    --dim: #9aa6c2;
+    --cyan: #5ef2ff;
+    --violet: #b388ff;
+    --line: rgba(94,242,255,.22);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: Geist, "Segoe UI", sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    min-height: 100vh;
+    font-family: Manrope, sans-serif;
+    overflow-x: hidden;
+    cursor: none;
   }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
+  @media (hover: none), (pointer: coarse) {
+    body, a, button { cursor: auto; }
+    .dot, .ring { display: none !important; }
+  }
+  canvas#field {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .aurora {
+    position: fixed; inset: -20%; z-index: 0; pointer-events: none;
     background:
-      radial-gradient(900px 420px at 85% -10%, rgba(223, 242, 90, 0.16), transparent 60%),
-      linear-gradient(180deg, transparent, rgba(0,0,0,0.35));
-    z-index: 0;
+      radial-gradient(40% 40% at 20% 20%, rgba(94,242,255,.18), transparent 60%),
+      radial-gradient(36% 40% at 80% 70%, rgba(179,136,255,.2), transparent 62%);
+    animation: drift 16s ease-in-out infinite alternate;
+    filter: blur(8px);
   }
-  a { color: inherit; }
-  .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; position: relative; z-index: 1; }
+  @keyframes drift {
+    from { transform: translate3d(0,0,0) scale(1); }
+    to { transform: translate3d(-3%, 2%, 0) scale(1.08); }
+  }
+  .dot, .ring {
+    position: fixed; top: 0; left: 0; border-radius: 50%;
+    pointer-events: none; z-index: 80; transform: translate(-50%,-50%);
+  }
+  .dot { width: 7px; height: 7px; background: #fff; box-shadow: 0 0 16px var(--cyan); }
+  .ring { width: 36px; height: 36px; border: 1px solid rgba(94,242,255,.7); transition: width .25s, height .25s, background .25s; }
+  body.hot .ring { width: 64px; height: 64px; background: rgba(179,136,255,.12); border-color: var(--violet); }
+  #boot {
+    position: fixed; inset: 0; z-index: 90; background: #03040a;
+    display: grid; place-items: center;
+    transition: opacity .6s ease, visibility .6s;
+  }
+  #boot.hide { opacity: 0; visibility: hidden; }
+  .boot-name {
+    font-family: Syne, sans-serif; font-weight: 800; letter-spacing: .28em;
+    font-size: clamp(28px, 6vw, 54px);
+    background: linear-gradient(100deg, #fff, var(--cyan) 45%, var(--violet));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { filter: drop-shadow(0 0 18px rgba(94,242,255,.7)); } }
+  .bar { width: 180px; height: 2px; margin: 18px auto 0; background: #1b2233; overflow: hidden; border-radius: 4px; }
+  .bar i { display: block; height: 100%; width: 40%; background: linear-gradient(90deg, transparent, var(--cyan), var(--violet)); animation: load 1s linear infinite; }
+  @keyframes load { from { transform: translateX(-120%); } to { transform: translateX(320%); } }
   header {
-    position: sticky; top: 0; z-index: 20;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 0 14px;
-    background: linear-gradient(var(--bg), rgba(9,10,12,0.86) 70%, transparent);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 6vw;
+    background: linear-gradient(rgba(5,6,10,.75), transparent);
     backdrop-filter: blur(10px);
   }
-  .mark {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    letter-spacing: 0.18em;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
+  .logo { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: .22em; text-decoration: none; color: #fff; }
+  nav { display: flex; gap: 26px; }
+  nav a { color: var(--dim); text-decoration: none; font-size: 14px; position: relative; }
+  nav a::after {
+    content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0;
+    background: linear-gradient(90deg, var(--cyan), var(--violet)); transition: width .3s;
   }
-  nav { display: flex; gap: 22px; }
-  nav a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 14px;
-  }
-  nav a:hover { color: var(--text); }
-  .hero { padding: 72px 0 40px; }
-  .kicker {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    color: var(--acid);
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+  nav a:hover { color: #fff; }
+  nav a:hover::after { width: 100%; }
+  main { position: relative; z-index: 1; }
+  .hero {
+    min-height: 100vh; display: grid; place-items: center; text-align: center;
+    padding: 120px 20px 60px;
   }
   h1 {
-    font-family: "Instrument Serif", Georgia, serif;
-    font-weight: 400;
-    font-size: clamp(64px, 12vw, 148px);
-    line-height: 0.86;
-    letter-spacing: -0.04em;
-    margin: 18px 0 22px;
+    font-family: Syne, sans-serif; font-weight: 800;
+    font-size: clamp(52px, 12vw, 128px); letter-spacing: .08em; line-height: .9;
+    background: linear-gradient(120deg, #fff 10%, var(--cyan) 45%, var(--violet) 85%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: glow 4.5s ease-in-out infinite alternate;
   }
-  h1 em { font-style: italic; color: var(--acid); }
-  .lede {
-    max-width: 620px;
-    color: #d9d4ca;
-    font-size: 18px;
+  @keyframes glow {
+    from { filter: drop-shadow(0 0 12px rgba(94,242,255,.25)); }
+    to { filter: drop-shadow(0 0 28px rgba(179,136,255,.45)); }
   }
-  .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .sub { margin-top: 14px; letter-spacing: .28em; text-transform: uppercase; color: var(--dim); font-size: 13px; }
+  .lead { max-width: 640px; margin: 18px auto 0; color: #d5def2; font-size: 18px; }
+  .actions { display: flex; gap: 14px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
   .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    text-decoration: none;
-    padding: 12px 16px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 500;
+    text-decoration: none; color: #fff; padding: 12px 22px; border-radius: 999px;
+    border: 1px solid var(--line); background: rgba(94,242,255,.08);
+    box-shadow: 0 0 0 rgba(94,242,255,0);
+    transition: transform .25s, box-shadow .25s, background .25s;
   }
-  .btn.solid { background: var(--acid); color: var(--ink); }
-  .btn.ghost { border: 1px solid var(--line); color: var(--text); }
-  .btn:hover { transform: translateY(-1px); }
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    margin-top: 64px;
-  }
-  .facts div { padding: 18px 16px 20px 0; }
-  .facts strong { display: block; font-size: 15px; font-weight: 600; }
-  .facts span { color: var(--muted); font-size: 13px; }
-  section { padding: 88px 0; }
-  .sec-h {
-    display: flex; justify-content: space-between; align-items: baseline;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 14px;
-    margin-bottom: 8px;
-  }
+  .btn.alt { background: rgba(179,136,255,.1); border-color: rgba(179,136,255,.45); }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 0 28px rgba(94,242,255,.35); }
+  section { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 80px 0; }
   h2 {
-    font-family: "Instrument Serif", Georgia, serif;
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 400;
-    letter-spacing: -0.03em;
+    font-family: Syne, sans-serif; text-align: center; font-size: clamp(28px, 4vw, 44px);
+    margin-bottom: 28px; letter-spacing: .08em;
   }
-  .sec-h span { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 12px; }
-  .project {
-    display: grid;
-    grid-template-columns: 92px 1.3fr 1fr auto;
-    gap: 18px;
-    align-items: center;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--line);
-    text-decoration: none;
+  .who {
+    max-width: 720px; margin: 0 auto; padding: 28px;
+    background: rgba(12,16,28,.55); border: 1px solid var(--line); border-radius: 24px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
   }
-  .project:hover h3 { color: var(--acid); }
-  .idx { font-family: "IBM Plex Mono", monospace; color: var(--muted); font-size: 13px; }
-  h3 { font-size: 28px; font-weight: 500; letter-spacing: -0.03em; }
-  .project p { color: var(--muted); font-size: 14px; }
-  .tag {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 12px;
-    border: 1px solid var(--line);
-    padding: 6px 10px;
-    border-radius: 999px;
-    color: var(--text);
-    white-space: nowrap;
+  .who p { color: #d5def2; }
+  .chips { margin-top: 18px; display: grid; gap: 8px; }
+  .chips div { display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,.06); padding: 8px 0; }
+  .chips span { width: 90px; color: var(--dim); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    padding: 22px; border-radius: 22px;
+    background: rgba(16,20,34,.62);
+    border: 1px solid rgba(94,242,255,.14);
+    backdrop-filter: blur(12px);
+    transition: transform .35s, border-color .35s, box-shadow .35s;
+    min-height: 180px;
   }
-  .about {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 48px;
+  .card:hover {
+    transform: translateY(-10px);
+    border-color: var(--cyan);
+    box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 30px rgba(94,242,255,.15);
   }
-  .about p { color: #d7d2c8; font-size: 18px; max-width: 46ch; }
-  .stack { display: flex; flex-wrap: wrap; gap: 8px; align-content: start; }
-  .stack i {
-    font-style: normal;
-    border: 1px solid var(--line);
-    padding: 8px 12px;
-    border-radius: 999px;
-    color: #ddd8ce;
-    font-size: 13px;
+  .card small { font-family: Syne, sans-serif; letter-spacing: .16em; color: var(--cyan); font-size: 11px; }
+  .card h3 { font-family: Syne, sans-serif; margin: 10px 0 8px; font-size: 24px; }
+  .card p { color: var(--dim); font-size: 14px; }
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .skills span {
+    padding: 10px 14px; border-radius: 999px;
+    border: 1px solid rgba(179,136,255,.35);
+    background: rgba(179,136,255,.08);
+    animation: floaty 5s ease-in-out infinite;
   }
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 28px 0 48px;
-    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    color: var(--muted); font-size: 13px;
-  }
-  footer a { color: var(--text); }
+  .skills span:nth-child(2n) { animation-delay: .4s; }
+  .skills span:nth-child(3n) { animation-delay: .8s; }
+  @keyframes floaty { 50% { transform: translateY(-4px); } }
+  footer { text-align: center; padding: 40px 16px 60px; color: var(--dim); position: relative; z-index: 1; }
+  footer a { color: var(--cyan); }
   @media (max-width: 800px) {
     nav { display: none; }
-    .facts, .about, .project { grid-template-columns: 1fr; }
-    .project .tag { justify-self: start; }
-    h3 { font-size: 22px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a class="mark" href="#top">MAXWORLD</a>
-    <nav>
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="https://github.com/movahedialireza41-cmyk" target="_blank" rel="noreferrer">GitHub</a>
-      <a href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Telegram</a>
-    </nav>
-  </header>
+<div id="boot"><div><div class="boot-name">MAXWORLD</div><div class="bar"><i></i></div></div></div>
+<canvas id="field"></canvas>
+<div class="aurora"></div>
+<div class="dot" id="dot"></div>
+<div class="ring" id="ring"></div>
 
-  <main id="top" class="hero">
-    <p class="kicker">Alireza · MaxWorld</p>
-    <h1>Build the<br><em>client.</em></h1>
-    <p class="lede">Personal site of Alireza. I ship Xray clients for Windows and Android, and the interfaces around them.</p>
-    <div class="row">
-      <a class="btn solid" href="#work">See the work</a>
-      <a class="btn ghost" href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Telegram</a>
-    </div>
-    <div class="facts">
-      <div><strong>Alireza</strong><span>Name</span></div>
-      <div><strong>MaxWorld</strong><span>Name online</span></div>
-      <div><strong>15</strong><span>Years old</span></div>
-      <div><strong>Clients + web</strong><span>What I ship</span></div>
-    </div>
-  </main>
+<header>
+  <a class="logo" href="#top">MAXWORLD</a>
+  <nav>
+    <a href="#top">Home</a>
+    <a href="#about">About</a>
+    <a href="#work">Projects</a>
+    <a href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Contact</a>
+  </nav>
+</header>
 
-  <section id="work">
-    <div class="sec-h">
-      <h2>Selected work</h2>
-      <span>04</span>
-    </div>
-
-    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorld-Windows" target="_blank" rel="noreferrer">
-      <span class="idx">01</span>
-      <h3>MaxWorld Windows</h3>
-      <p>Xray client for Windows. Installer and portable builds sit on Releases. System proxy, TUN, subscriptions, shield.</p>
-      <span class="tag">Windows · Electron</span>
-    </a>
-
-    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorldvpn" target="_blank" rel="noreferrer">
-      <span class="idx">02</span>
-      <h3>MaxWorld Android</h3>
-      <p>Full Xray client for Android. VLESS, VMess, Trojan, Reality, subscriptions, kill switch, in-app updates.</p>
-      <span class="tag">Android · Kotlin</span>
-    </a>
-
-    <a class="project" href="https://github.com/movahedialireza41-cmyk/MaxWorldStore" target="_blank" rel="noreferrer">
-      <span class="idx">03</span>
-      <h3>MaxWorld Store</h3>
-      <p>A small storefront built as a static site. Layout, catalog, and the public face of the brand.</p>
-      <span class="tag">Web · HTML</span>
-    </a>
-
-    <a class="project" href="https://github.com/movahedialireza41-cmyk/Premium-call" target="_blank" rel="noreferrer">
-      <span class="idx">04</span>
-      <h3>Premium Call</h3>
-      <p>An earlier web project. Kept here because the interface work still holds up.</p>
-      <span class="tag">Web</span>
-    </a>
-  </section>
-
-  <section id="about">
-    <div class="sec-h">
-      <h2>About</h2>
-      <span>Now</span>
-    </div>
-    <div class="about">
-      <p>MaxWorld is the name I publish under. I like products that feel finished: a real installer, a readable screen, and a release people can actually download. Fifteen, and already shipping both a phone client and a desktop client.</p>
-      <div class="stack">
-        <i>Kotlin</i><i>Jetpack Compose</i><i>Electron</i><i>JavaScript</i>
-        <i>Xray</i><i>HTML / CSS</i><i>GitHub Actions</i>
+<main>
+  <section class="hero" id="top">
+    <div>
+      <h1>MAXWORLD</h1>
+      <p class="sub">Developer · Designer · Builder</p>
+      <p class="lead">I'm Alireza. I build the MaxWorld clients — a full Xray app for Android and a Windows app with installer and portable builds — plus the sites around them.</p>
+      <div class="actions">
+        <a class="btn" href="#work">Enter the work</a>
+        <a class="btn alt" href="https://t.me/MaxWorld9050" target="_blank" rel="noreferrer">Telegram</a>
       </div>
     </div>
   </section>
 
-  <footer>
-    <span>MaxWorld · Alireza</span>
-    <span><a href="https://github.com/movahedialireza41-cmyk/MaxWeb">Source of this site</a></span>
-  </footer>
-</div>
+  <section id="about">
+    <h2>WHO</h2>
+    <div class="who">
+      <p>MaxWorld is the name I ship under. Fifteen, and already maintaining a phone client and a desktop client that people can download.</p>
+      <div class="chips">
+        <div><span>Name</span><b>Alireza</b></div>
+        <div><span>Brand</span><b>MaxWorld</b></div>
+        <div><span>Age</span><b>15</b></div>
+        <div><span>Focus</span><b>Clients, interfaces, motion</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <h2>WORK</h2>
+    <div class="grid">
+      <a class="card" href="https://github.com/movahedialireza41-cmyk/MaxWorld-Windows" target="_blank" rel="noreferrer">
+        <small>01 · WINDOWS</small>
+        <h3>MaxWorld Windows</h3>
+        <p>Electron + Xray. System proxy, TUN, subscriptions, shield. Setup and portable exe land on Releases.</p>
+      </a>
+      <a class="card" href="https://github.com/movahedialireza41-cmyk/MaxWorldvpn" target="_blank" rel="noreferrer">
+        <small>02 · ANDROID</small>
+        <h3>MaxWorld Android</h3>
+        <p>Kotlin client. VLESS, VMess, Trojan, Reality, kill switch, live data, in-app updates.</p>
+      </a>
+      <a class="card" href="https://github.com/movahedialireza41-cmyk/MaxWorldvpn/releases/latest" target="_blank" rel="noreferrer">
+        <small>03 · DOWNLOAD</small>
+        <h3>Latest Android</h3>
+        <p>The current APK, published from the Android repo.</p>
+      </a>
+      <a class="card" href="https://github.com/movahedialireza41-cmyk/MaxWorldStore" target="_blank" rel="noreferrer">
+        <small>04 · WEB</small>
+        <h3>MaxWorld Store</h3>
+        <p>The storefront. A public face for the brand, built as a site.</p>
+      </a>
+      <a class="card" href="https://github.com/movahedialireza41-cmyk/Premium-call" target="_blank" rel="noreferrer">
+        <small>05 · WEB</small>
+        <h3>Premium Call</h3>
+        <p>Earlier interface work. Still part of the trail.</p>
+      </a>
+      <a class="card" href="https://github.com/movahedialireza41-cmyk" target="_blank" rel="noreferrer">
+        <small>06 · GITHUB</small>
+        <h3>Everything else</h3>
+        <p>The rest of the public repos, in one place.</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>STACK</h2>
+    <div class="skills">
+      <span>Kotlin</span><span>Jetpack Compose</span><span>Electron</span>
+      <span>JavaScript</span><span>Xray</span><span>HTML / CSS</span><span>Motion</span>
+    </div>
+  </section>
+</main>
+<footer>MaxWorld · <a href="https://github.com/movahedialireza41-cmyk/MaxWeb">site source</a></footer>
+<script>
+  const boot = document.getElementById('boot');
+  setTimeout(() => boot.classList.add('hide'), 900);
+  const dot = document.getElementById('dot');
+  const ring = document.getElementById('ring');
+  let x = innerWidth/2, y = innerHeight/2, rx = x, ry = y;
+  addEventListener('pointermove', e => {
+    x = e.clientX; y = e.clientY;
+    dot.style.left = x + 'px'; dot.style.top = y + 'px';
+    const hot = e.target.closest('a, button');
+    document.body.classList.toggle('hot', !!hot);
+  });
+  (function loop(){
+    rx += (x - rx) * .18; ry += (y - ry) * .18;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+  const c = document.getElementById('field');
+  const ctx = c.getContext('2d');
+  let pts = [];
+  function size(){
+    c.width = innerWidth; c.height = innerHeight;
+    const n = Math.min(90, Math.floor(innerWidth / 16));
+    pts = Array.from({length: n}, () => ({
+      x: Math.random()*c.width, y: Math.random()*c.height,
+      vx: (Math.random()-.5)*.45, vy: (Math.random()-.5)*.45
+    }));
+  }
+  size();
+  addEventListener('resize', size);
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    for (const p of pts){
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > c.width) p.vx *= -1;
+      if (p.y < 0 || p.y > c.height) p.vy *= -1;
+      const dx = p.x - x, dy = p.y - y;
+      const d = Math.hypot(dx, dy);
+      if (d < 140) { p.x -= dx * .008; p.y -= dy * .008; }
+    }
+    for (let i=0;i<pts.length;i++){
+      const a = pts[i];
+      ctx.fillStyle = 'rgba(94,242,255,.85)';
+      ctx.beginPath(); ctx.arc(a.x, a.y, 1.4, 0, 7); ctx.fill();
+      for (let j=i+1;j<pts.length;j++){
+        const b = pts[j];
+        const dist = Math.hypot(a.x-b.x, a.y-b.y);
+        if (dist < 130){
+          ctx.strokeStyle = 'rgba(179,136,255,' + (1 - dist/130) * .35 + ')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) draw();
+</script>
 </body>
 </html>
